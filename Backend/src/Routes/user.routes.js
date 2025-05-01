@@ -1,0 +1,20 @@
+import {Router} from 'express'
+import { checking_loggedinuser, LoginUser, mydocs, getting_doc_content,RegisterUser, saving_title,anyuser, get_title, autosave, all_docs, status_of_req } from '../Controller/User.controller.js';
+import { authloginmw, authsignupmw } from '../Middleware/signup.middleware.js';
+import { authtoken } from '../Middleware/authtoken.middleware.js';
+import { userverified } from '../Controller/userverified.js';
+const userrouter = Router();
+console.log("aaya hu routes ");
+userrouter.route('/Register').post(authsignupmw,RegisterUser);
+userrouter.route('/Login').post(authloginmw,LoginUser);
+userrouter.route('/checkforauthentication').post(authtoken,userverified);
+userrouter.route('/saving-the-doc').post(saving_title);
+userrouter.route('/checking-the-owner').post(checking_loggedinuser);
+userrouter.route('/getting_doc_content').post(getting_doc_content);
+userrouter.route('/my_docs').post(mydocs);
+userrouter.route('/anyuser').post(anyuser);
+userrouter.route('/gettitle').post(get_title);
+userrouter.route('/autosave').post(autosave);
+userrouter.route('/all_docs').get(all_docs);
+userrouter.route('/status_of_req').post(status_of_req);
+export default userrouter;
