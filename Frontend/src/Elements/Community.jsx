@@ -9,13 +9,13 @@ function Community() {
   const getting_alldocs = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:1000/api/user/all_docs"
+        `${import.meta.env.API_KEY}/api/user/all_docs`
       );
-      console.log(response)
+      console.log("coming from the server")
       if (response) {
         setdata(response.data.data);
       }
-      // console.log(response);
+      console.log(response);
     } catch (error) {
       console.error("Error fetching documents:", error);
     }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
@@ -54,7 +54,9 @@ function LandingPage() {
       }
     }
   };
-
+  useEffect(()=>{
+    console.log(import.meta.env.VITE_API_KEY);
+  },[])
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
       {/* Hero Section */}

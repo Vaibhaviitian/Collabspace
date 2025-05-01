@@ -19,7 +19,7 @@ const Dashboard = () => {
     try {
       // Simulate fetching data from the backend
       const response = await axios.post(
-        "http://localhost:1000/api/user/my_docs",
+        `${import.meta.env.VITE_API_KEY}/api/user/my_docs`,
         {
           user_id,
         }
@@ -38,7 +38,7 @@ const Dashboard = () => {
   const getting_alldocs = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:1000/api/user/all_docs"
+        "${import.meta.env.VITE_API_KEY}/api/user/all_docs"
       );
       console.log(response);
       const updatedSharedProjects = [];
@@ -71,7 +71,7 @@ const Dashboard = () => {
     console.log(id);
     console.log("delete");
     const response = await axios.post(
-      "http://localhost:1000/api/collabs/delete_doc",
+      "${import.meta.env.VITE_API_KEY}/api/collabs/delete_doc",
       {
         id,
       }

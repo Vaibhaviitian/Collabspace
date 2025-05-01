@@ -15,7 +15,7 @@ function Card({ title, ownerid, docid }) {
   const ownerabout = async () => {
     try {
       const response = await axios.post(
-        `http://localhost:1000/api/user/anyuser`,
+        `${import.meta.env.VITE_API_KEY}/api/user/anyuser`,
         { user_id: ownerid }
       );
       if (response.status === 200) {
@@ -37,7 +37,7 @@ function Card({ title, ownerid, docid }) {
     setStatus("pending......");
     try {
       const response = await axios.post(
-        "http://localhost:1000/api/collabs/sending_request",
+        `${import.meta.env.VITE_API_KEY}/api/collabs/sending_request`,
         { user_id, doc_id:docid, permission }
       );
       toast.success(`${response?.data?.message}`);
@@ -52,7 +52,7 @@ function Card({ title, ownerid, docid }) {
   const status_of_req = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:1000/api/user/status_of_req",
+        `${import.meta.env.VITE_API_KEY}/api/user/status_of_req`,
         { docid, user_id }
       );
       if (response.status === 200) {

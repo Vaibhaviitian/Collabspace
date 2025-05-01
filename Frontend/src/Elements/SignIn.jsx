@@ -16,7 +16,7 @@ function SignInPage() {
       // toast.success("login into the system");
       console.log("handling login");
       const response = await axios.post(
-        "http://localhost:1000/api/user/login",
+        `${import.meta.env.VITE_API_KEY}/api/user/login`,
         {
           email,
           password,
