@@ -3,6 +3,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 function SignUpPage() {
   const [username, setUsername] = useState("");
@@ -10,145 +11,204 @@ function SignUpPage() {
   const [password, setPassword] = useState("");
   const [isload, setIsload] = useState(false);
   const navigate = useNavigate();
+
   const handleregister = async (e) => {
     try {
       e.preventDefault();
-      console.log(username, email, password);
+      setIsload(true);
       const response = await axios.post(
-        `${import.meta.env.VITE_API_KEY}/api/user/Register`,
-        {
-          username,
-          email,
-          password,
-        }
+        "http://localhost:1000/api/user/Register",
+        { username, email, password }
       );
-      console.log(response.data.message);
-      // console.log(response);
       toast.success(response.data.message);
       setIsload(false);
       navigate("/login");
-      console.log(response);
     } catch (error) {
-      console.log(error.response.data.message);
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Registration failed");
       setIsload(false);
     }
   };
+
+  // Smoother animation variants
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.3
+      }
+    }
+  };
+
+  const item = {
+    hidden: { y: 10, opacity: 0 },
+    show: { 
+      y: 0, 
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 10
+      }
+    }
+  };
+
   return (
-    <>
-      <div className="flex items-center justify-center h-screen bg-gray-50">
-        <div className="w-full max-w-md p-8 bg-white rounded shadow-md">
-          <div className="flex flex-col items-center mb-6">
-            <div className="text-blue-600 mb-4">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="2"
-                stroke="currentColor"
-                className="w-12 h-12"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M9 12h6m2 8H7a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v12a2 2 0 01-2 2z"
-                />
-              </svg>
-            </div>
-            <h2 className="text-2xl font-bold text-gray-800">Sign up</h2>
-            <p className="text-gray-500">to join Docs</p>
-          </div>
-          <form className="space-y-4" onSubmit={handleregister}>
-            <div>
-              <label
-                htmlFor="username"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Username
-              </label>
-              <input
-                type="username"
-                id="username"
-                value={username}
-                onChange={(e) => {
-                  setUsername(e.target.value);
-                  // console.log(email);
-                }}
-                className="w-full px-4 py-2 mt-1 border rounded-md focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Enter your username"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  // console.log(email);
-                }}
-                className="w-full px-4 py-2 mt-1 border rounded-md focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Enter your email"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Password
-              </label>
-              <input
-                type="password"
-                id="password"
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  // console.log(email);
-                }}
-                className="w-full px-4 py-2 mt-1 border rounded-md focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Create a password"
-              />
-            </div>
-            <button
-              type="submit"
-              className="w-full px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+    <div className="flex items-center justify-center min-h-screen bg-gray-900">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 2 }}
+        className="w-full max-w-md p-8 bg-gray-800 rounded-xl shadow-2xl border border-gray-700"
+      >
+        {/* Header */}
+        <motion.div 
+          className="flex flex-col items-center mb-8"
+          variants={container}
+          initial="hidden"
+          animate="show"
+        >
+          <motion.div 
+            variants={item}
+            className="mb-6 bg-gradient-to-r from-cyan-500 to-blue-600 p-3 rounded-lg"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="2"
+              stroke="currentColor"
+              className="w-10 h-10 text-white"
             >
-              Sign Up
-            </button>
-            {isload ? (
-              <>
-                {" "}
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <div class="w-10 h-10 border-4 border-t-blue-500 border-gray-300 rounded-full animate-spin"></div>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M9 12h6m2 8H7a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v12a2 2 0 01-2 2z"
+              />
+            </svg>
+          </motion.div>
+
+          <motion.h2 
+            variants={item}
+            className="text-3xl font-bold text-white"
+          >
+            Create Your Account
+          </motion.h2>
+          <motion.p 
+            variants={item}
+            className="text-gray-400 mt-2"
+          >
+            Join our community
+          </motion.p>
+        </motion.div>
+
+        {/* Form */}
+        <motion.form 
+          className="space-y-5"
+          onSubmit={handleregister}
+          variants={container}
+          initial="hidden"
+          animate="show"
+        >
+          {/* Username */}
+          <motion.div variants={item}>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Username
+            </label>
+            <motion.input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+              placeholder="Enter username"
+              whileFocus={{
+                boxShadow: "0 0 0 2px rgba(6, 182, 212, 0.5)"
+              }}
+            />
+          </motion.div>
+
+          {/* Email */}
+          <motion.div variants={item}>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Email
+            </label>
+            <motion.input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+              placeholder="Enter email"
+              whileFocus={{
+                boxShadow: "0 0 0 2px rgba(6, 182, 212, 0.5)"
+              }}
+            />
+          </motion.div>
+
+          {/* Password */}
+          <motion.div variants={item}>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Password
+            </label>
+            <motion.input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+              placeholder="Create password"
+              whileFocus={{
+                boxShadow: "0 0 0 2px rgba(6, 182, 212, 0.5)"
+              }}
+            />
+          </motion.div>
+
+          {/* Submit Button */}
+          <motion.div variants={item}>
+            <motion.button
+              type="submit"
+              className="w-full px-6 py-3 text-white bg-gradient-to-r from-cyan-600 to-blue-600 rounded-lg font-medium hover:from-cyan-500 hover:to-blue-500 transition-all"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              disabled={isload}
+            >
+              {isload ? (
+                <div className="flex items-center justify-center">
+                  <motion.span
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                    className="inline-block h-5 w-5 border-2 border-white border-t-transparent rounded-full mr-2"
+                  />
+                  Creating account...
                 </div>
-              </>
-            ) : (
-              <></>
-            )}
-          </form>
-          <p className="mt-6 text-center text-sm text-gray-500">
-            Already have an account?{" "}
-            <Link to="/login" className="text-blue-600 hover:underline">
-              Sign in
-            </Link>
-          </p>
-        </div>
-        <ToastContainer/>
-      </div>
-    </>
+              ) : (
+                "Sign Up"
+              )}
+            </motion.button>
+          </motion.div>
+        </motion.form>
+
+        {/* Login Link */}
+        <motion.div 
+          className="mt-6 text-center text-sm text-gray-400"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.8 }}
+        >
+          Already have an account?{" "}
+          <Link 
+            to="/login" 
+            className="font-medium text-cyan-400 hover:text-cyan-300 hover:underline"
+          >
+            Sign in
+          </Link>
+        </motion.div>
+      </motion.div>
+      <ToastContainer 
+        position="bottom-right" 
+        autoClose={3000} 
+        toastStyle={{ backgroundColor: '#1F2937', color: '#E5E7EB' }} 
+      />
+    </div>
   );
 }
 

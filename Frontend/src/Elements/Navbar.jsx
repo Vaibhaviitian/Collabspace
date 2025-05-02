@@ -82,18 +82,6 @@ export default function Navbar() {
                   >
                     Login
                   </Link>
-                  <Link
-                    to="/contactus"
-                    className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors duration-300"
-                  >
-                    Contact
-                  </Link>
-                  <Link
-                    to="/aboutus"
-                    className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors duration-300"
-                  >
-                    About
-                  </Link>
                 </>
               ) : (
                 <>
@@ -148,20 +136,6 @@ export default function Navbar() {
                   onClick={toggleSidebar}
                 >
                   Login
-                </Link>
-                <Link
-                  to="/contactus"
-                  className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
-                  onClick={toggleSidebar}
-                >
-                  Contact
-                </Link>
-                <Link
-                  to="/aboutus"
-                  className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
-                  onClick={toggleSidebar}
-                >
-                  About
                 </Link>
               </>
             ) : (

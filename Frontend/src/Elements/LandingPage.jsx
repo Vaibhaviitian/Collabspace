@@ -1,17 +1,243 @@
-import React, { useEffect } from "react";
-import { motion } from "framer-motion";
+import React, { useState, useEffect, useRef } from "react";
+import { motion, useAnimation, useInView } from "framer-motion";
 import { Link } from "react-router-dom";
 
+// Enhanced DecryptingText with particle effects
+const DecryptingText = ({ text, duration, gradient }) => {
+  const [displayText, setDisplayText] = useState('');
+  const [isDecrypted, setIsDecrypted] = useState(false);
+  const [particles, setParticles] = useState([]);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
+
+  const animateParticles = () => {
+    const newParticles = [];
+    for (let i = 0; i < 30; i++) {
+      newParticles.push({
+        id: i,
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+        size: Math.random() * 3 + 1,
+        speed: Math.random() * 2 + 1,
+        opacity: Math.random() * 0.5 + 0.5
+      });
+    }
+    setParticles(newParticles);
+  };
+
+  useEffect(() => {
+    if (!isInView) return;
+
+    let animationFrame;
+    let startTime = Date.now();
+    const endTime = startTime + duration * 1000;
+
+    // Initial jumbled text with more dramatic characters
+    const dramaticChars = '█▓▒░⣿⢹⣿⡟⣿⡏⠉⠙⠛⠋▄▀▌▐■►▼▲►▼◄◙◘♠♣♥♦♫☼►◄↕‼¶§▬↨↑↓→←∟↔▲►▼';
+    setDisplayText(
+      Array(text.length)
+        .fill(0)
+        .map(() => dramaticChars.charAt(Math.floor(Math.random() * dramaticChars.length)))
+        .join('')
+    );
+
+    animateParticles();
+
+    const animate = () => {
+      const currentTime = Date.now();
+      const progress = Math.min(1, (currentTime - startTime) / (duration * 1000));
+
+      if (progress >= 1) {
+        setDisplayText(text);
+        setIsDecrypted(true);
+        setParticles([]);
+        return;
+      }
+
+      // Animate particles
+      setParticles(prev => 
+        prev.map(p => ({
+          ...p,
+          y: p.y - p.speed,
+          opacity: p.opacity * 0.98
+        })).filter(p => p.y > -10 && p.opacity > 0.1)
+      );
+
+      // Add new particles occasionally
+      if (Math.random() > 0.7) {
+        setParticles(prev => [
+          ...prev,
+          {
+            id: Date.now() + Math.random(),
+            x: Math.random() * 100,
+            y: 100 + Math.random() * 20,
+            size: Math.random() * 3 + 1,
+            speed: Math.random() * 2 + 1,
+            opacity: Math.random() * 0.5 + 0.5
+          }
+        ]);
+      }
+
+      // Calculate decrypted portion
+      const decryptedLength = Math.floor(progress * text.length);
+      const decryptedPart = text.substring(0, decryptedLength);
+      const jumbledPart = Array(text.length - decryptedLength)
+        .fill(0)
+        .map(() => dramaticChars.charAt(Math.floor(Math.random() * dramaticChars.length)))
+        .join('');
+
+      setDisplayText(decryptedPart + jumbledPart);
+      animationFrame = requestAnimationFrame(animate);
+    };
+
+    animationFrame = requestAnimationFrame(animate);
+
+    return () => cancelAnimationFrame(animationFrame);
+  }, [text, duration, isInView]);
+
+  return (
+    <motion.span 
+      ref={ref}
+      className={`relative font-fira-code ${gradient}`}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: isInView ? 1 : 0 }}
+      transition={{ duration: 0.3 }}
+    >
+      {displayText}
+      {!isDecrypted && particles.length > 0 && (
+        <div className="absolute inset-0 overflow-hidden">
+          {particles.map((p) => (
+            <motion.div
+              key={p.id}
+              className="absolute bg-white rounded-full"
+              style={{
+                left: `${p.x}%`,
+                top: `${p.y}%`,
+                width: `${p.size}px`,
+                height: `${p.size}px`,
+                opacity: p.opacity
+              }}
+              initial={{ y: 0 }}
+              animate={{ y: -10 }}
+              transition={{ duration: 1 }}
+            />
+          ))}
+        </div>
+      )}
+      {!isDecrypted && (
+        <motion.span
+          animate={{ opacity: [0, 1, 0] }}
+          transition={{ duration: 0.5, repeat: Infinity }}
+          className="ml-1"
+        >
+          |
+        </motion.span>
+      )}
+    </motion.span>
+  );
+};
+
+// New 3D Card Component for Features
+const FeatureCard3D = ({ icon, title, description }) => {
+  const cardRef = useRef(null);
+  const [rotate, setRotate] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleMouseMove = (e) => {
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    setRotate({
+      x: (y - centerY) / 20,
+      y: -(x - centerX) / 20
+    });
+  };
+
+  return (
+    <motion.div
+      ref={cardRef}
+      className="p-8 rounded-xl bg-gray-900 border border-gray-800 relative overflow-hidden"
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => {
+        setRotate({ x: 0, y: 0 });
+        setIsHovered(false);
+      }}
+      style={{
+        transform: `perspective(1000px) rotateX(${rotate.x}deg) rotateY(${rotate.y}deg)`,
+        transition: 'transform 0.1s ease-out'
+      }}
+    >
+      {/* Glow effect */}
+      {isHovered && (
+        <motion.div 
+          className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-blue-600/10 pointer-events-none"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+        />
+      )}
+      
+      <div className="relative z-10">
+        <div className="w-12 h-12 mb-6 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 flex items-center justify-center">
+          {icon}
+        </div>
+        <h3 className="text-xl font-bold mb-3 text-white">{title}</h3>
+        <p className="text-gray-400">{description}</p>
+      </div>
+    </motion.div>
+  );
+};
+
+// New Animated Background Component
+const AnimatedBackground = () => {
+  return (
+    <div className="absolute inset-0 overflow-hidden z-0">
+      {[...Array(20)].map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute rounded-full bg-gradient-to-r from-cyan-500/20 to-blue-600/20"
+          style={{
+            width: `${Math.random() * 300 + 100}px`,
+            height: `${Math.random() * 300 + 100}px`,
+            left: `${Math.random() * 100}%`,
+            top: `${Math.random() * 100}%`,
+          }}
+          initial={{ opacity: 0 }}
+          animate={{
+            opacity: [0, 0.3, 0],
+            x: [0, (Math.random() - 0.5) * 200],
+            y: [0, (Math.random() - 0.5) * 200]
+          }}
+          transition={{
+            duration: Math.random() * 30 + 20,
+            repeat: Infinity,
+            repeatType: 'reverse',
+            delay: Math.random() * 10
+          }}
+        />
+      ))}
+    </div>
+  );
+};
+
 function LandingPage() {
+  const controls = useAnimation();
+  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
+  
+  // Enhanced variants with more dynamic movements
   const wordVariants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 40, rotateX: 90 },
     visible: (i) => ({
       opacity: 1,
       y: 0,
+      rotateX: 0,
       transition: {
-        delay: i * 0.1,
-        duration: 0.5,
-        ease: "easeOut"
+        delay: i * 0.15,
+        duration: 0.8,
+        ease: [0.16, 1, 0.3, 1],
+        type: 'spring'
       }
     })
   };
@@ -21,46 +247,76 @@ function LandingPage() {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1,
+        staggerChildren: 0.15,
         delayChildren: 0.3
       }
     }
   };
 
   const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
+    hidden: { y: 40, opacity: 0, scale: 0.8 },
     visible: {
       y: 0,
       opacity: 1,
+      scale: 1,
       transition: {
-        duration: 0.6,
-        ease: "easeOut"
+        duration: 0.8,
+        ease: [0.16, 1, 0.3, 1]
       }
     }
   };
 
   const featureCardVariants = {
     offscreen: {
-      y: 50,
-      opacity: 0
+      y: 100,
+      opacity: 0,
+      rotateX: 30
     },
     onscreen: {
       y: 0,
       opacity: 1,
+      rotateX: 0,
       transition: {
         type: "spring",
         bounce: 0.4,
-        duration: 0.8
+        duration: 1
       }
     }
   };
-  useEffect(()=>{
-    console.log(import.meta.env.VITE_API_KEY);
-  },[])
+
+  // Mouse follower effect
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      setCursorPos({ x: e.clientX, y: e.clientY });
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-100">
+    <div className="min-h-screen bg-gray-950 text-gray-100 overflow-hidden">
+      {/* Custom cursor */}
+      <motion.div
+        className="fixed w-8 h-8 rounded-full bg-blue-500/30 pointer-events-none z-50"
+        style={{
+          left: cursorPos.x - 16,
+          top: cursorPos.y - 16,
+          mixBlendMode: 'screen'
+        }}
+        animate={{
+          scale: [1, 1.5, 1],
+          opacity: [0.5, 1, 0.5]
+        }}
+        transition={{
+          duration: 2,
+          repeat: Infinity,
+          ease: 'easeInOut'
+        }}
+      />
+      
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 overflow-hidden">
+        <AnimatedBackground />
         <div className="absolute inset-0 bg-gradient-to-br from-gray-900/80 to-gray-950/90 z-0"></div>
         
         <motion.div 
@@ -73,8 +329,16 @@ function LandingPage() {
             className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-6"
             variants={itemVariants}
           >
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">CREATE</span>{' '}
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500">TOGETHER</span>
+            <DecryptingText 
+              text="CREATE" 
+              duration={1.5}
+              gradient="bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400"
+            />{' '}
+            <DecryptingText 
+              text="TOGETHER" 
+              duration={2}
+              gradient="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500"
+            />
           </motion.h1>
           
           <motion.div 
@@ -105,9 +369,9 @@ function LandingPage() {
               to='/dashboard' 
               className="group relative inline-flex items-center justify-center px-8 py-4 sm:px-10 sm:py-5 overflow-hidden text-lg font-medium rounded-full bg-white text-gray-900 hover:bg-gray-100 transition-all duration-300 hover:shadow-lg"
             >
-              Get Started
+              <span className="relative z-10">Get Started</span>
               <svg 
-                className="ml-3 w-5 h-5 transition-all duration-300 group-hover:translate-x-1" 
+                className="ml-3 w-5 h-5 transition-all duration-300 group-hover:translate-x-1 relative z-10" 
                 fill="none" 
                 stroke="currentColor" 
                 viewBox="0 0 24 24" 
@@ -115,6 +379,13 @@ function LandingPage() {
               >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
               </svg>
+              {/* Button hover effect */}
+              <motion.span 
+                className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                initial={{ x: '-100%' }}
+                whileHover={{ x: '0%' }}
+                transition={{ duration: 0.4 }}
+              />
             </Link>
           </motion.div>
         </motion.div>

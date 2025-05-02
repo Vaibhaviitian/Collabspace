@@ -9,14 +9,11 @@ import {
   Navigate,
 } from "react-router-dom";
 import LandingPage from "./Elements/LandingPage.jsx";
-import Aboutus from "./Elements/Aboutus.jsx";
 import {Editor} from "./Elements/Editors.jsx";
 import SignInPage from "./Elements/SignIn.jsx";
 import SignUpPage from "./Elements/SignUp.jsx";
 import Privateroutes from "./Elements/PrivateRoute.jsx";
 import { v4 as uuidV4 } from "uuid";
-import ContactUs from "./Elements/Contactus.jsx";
-import AboutUs from "./Elements/Aboutus.jsx";
 import Dashboard from "./Elements/Dashboard.jsx";
 import Community from "./Elements/Community.jsx";
 import Notifications from "./Elements/Notifications.jsx";
@@ -27,7 +24,6 @@ const routes = [
     element: <Layout />,
     children: [
       { index: true, element: <LandingPage /> },
-      { path: "about", element: <Aboutus /> },
       {
         path: "doc-editing",
         element: <Navigate to={`/api/new/FluxDocs/${uuidV4()}`} />,
@@ -73,14 +69,6 @@ const routes = [
   {
     path: "/signup",
     element: <SignUpPage />,
-  },
-  {
-    path: "/contactus",
-    element: <ContactUs />,
-  },
-  {
-    path: "/aboutus",
-    element: <AboutUs />,
   },
 ];
 

@@ -1,27 +1,22 @@
 import axios from "axios";
-import React, { act, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
-// Example Notification Data
+import { motion } from "framer-motion";
 
 export default function NotificationTabs() {
   const [activeTab, setActiveTab] = useState("sent");
-
   const [sentNotifications, setSentNotifications] = useState([]);
-  const [docinfo, setDocinfo] = useState({});
-
   const [incomingNotifications, setIncomingNotifications] = useState([]);
   const user_id = localStorage.getItem("itemhai");
+
+  // API calls remain exactly the same
   const incomingNotifications_handler = async () => {
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_API_KEY}/api/collabs/my_requests`,
-        {
-          user_id,
-        }
+        "http://localhost:1000/api/collabs/my_requests",
+        { user_id }
       );
-      console.log(response);
       setIncomingNotifications(response?.data?.data);
     } catch (error) {
       console.log(error);
@@ -29,15 +24,11 @@ export default function NotificationTabs() {
   };
 
   const sentNotifications_handler = async () => {
-    const user_id = localStorage.getItem("itemhai");
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_API_KEY}/api/collabs/sended_requests`,
-        {
-          user_id,
-        }
+        "http://localhost:1000/api/collabs/sended_requests",
+        { user_id }
       );
-      console.log(response);
       setSentNotifications(response?.data?.data);
     } catch (error) {
       console.log(error);
@@ -46,33 +37,25 @@ export default function NotificationTabs() {
 
   const acceptingrequest = async (request_id) => {
     try {
-      const action = "accepted";
-      console.log(user_id, request_id, action);
       const response = await axios.post(
-        `${import.meta.env.VITE_API_KEY}/api/collabs/handling_request`,
-        { user_id, request_id, action }
+        "http://localhost:1000/api/collabs/handling_request",
+        { user_id, request_id, action: "accepted" }
       );
-      console.log(response);
       toast.success(response?.data?.message);
     } catch (error) {
       toast.error(error?.response?.message);
-      console.log(error);
     }
   };
 
   const rejectingrequest = async (request_id) => {
     try {
-      const action = "rejected";
-      console.log(action, user_id, request_id);
       const response = await axios.post(
-        `${import.meta.env.VITE_API_KEY}/api/collabs/handling_request`,
-        { action, request_id, user_id }
+        "http://localhost:1000/api/collabs/handling_request",
+        { action: "rejected", request_id, user_id }
       );
-      console.log(response);
       toast.success(response?.data?.message);
     } catch (error) {
       toast.error(error?.response?.message);
-      console.log(error);
     }
   };
 
@@ -82,77 +65,95 @@ export default function NotificationTabs() {
   }, []);
 
   return (
-    <div className="p-4 md:p-6 bg-gray-100 min-h-screen">
-      {/* Header */}
-      <h1 className="text-2xl md:text-3xl font-bold mb-6 text-center text-gray-700">
+    <div className="p-4 md:p-6 bg-gray-900 min-h-screen">
+      {/* Header with gradient text */}
+      <motion.h1 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-2xl md:text-3xl font-bold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500"
+      >
         Notifications
-      </h1>
+      </motion.h1>
 
-      {/* Tabs */}
-      <div className="flex justify-center mb-4">
-        <div className="flex space-x-4 bg-white shadow rounded-lg p-2">
+      {/* Tabs - Dark Theme */}
+      <motion.div 
+        className="flex justify-center mb-6"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+      >
+        <div className="flex space-x-1 bg-gray-800 shadow rounded-lg p-1 border border-gray-700">
           <button
-            className={`px-4 py-2 rounded-md font-semibold text-gray-700 transition ${
-              activeTab === "sent" ? "bg-gray-200" : "hover:bg-gray-100"
+            className={`px-4 py-2 rounded-md font-medium transition-all ${
+              activeTab === "sent" 
+                ? "bg-gray-700 text-white shadow" 
+                : "text-gray-400 hover:text-white"
             }`}
             onClick={() => setActiveTab("sent")}
           >
             Sent Requests
           </button>
           <button
-            className={`px-4 py-2 rounded-md font-semibold text-gray-700 transition ${
-              activeTab === "incoming" ? "bg-gray-200" : "hover:bg-gray-100"
+            className={`px-4 py-2 rounded-md font-medium transition-all ${
+              activeTab === "incoming" 
+                ? "bg-gray-700 text-white shadow" 
+                : "text-gray-400 hover:text-white"
             }`}
             onClick={() => setActiveTab("incoming")}
           >
             Incoming Requests
           </button>
         </div>
-      </div>
+      </motion.div>
 
-      {/* Notifications Container */}
-      <div className="bg-white shadow-md rounded-lg max-w-4xl mx-auto overflow-y-auto">
+      {/* Notifications Container - Dark Card */}
+      <motion.div 
+        className="bg-gray-800 shadow-lg rounded-lg border border-gray-700 max-w-4xl mx-auto overflow-hidden"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2 }}
+      >
         {/* Sent Requests Tab */}
         {activeTab === "sent" && (
           <>
             {sentNotifications.length > 0 ? (
               sentNotifications.map((item, index) => (
-                <div
+                <motion.div
                   key={index}
-                  className="flex flex-col sm:flex-row justify-between items-center gap-2 p-4 border-b hover:bg-gray-50 transition"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                  className="flex flex-col sm:flex-row justify-between items-center gap-4 p-4 border-b border-gray-700 hover:bg-gray-750 transition"
                 >
-                  {/* Left Section */}
                   <div className="flex items-start gap-4">
-                    <div className="flex items-center justify-center h-12 w-12 rounded-full bg-teal-100 text-teal-600 font-semibold">
-                      {item.owner.username[0]} {/* First Letter of Sender */}
+                    <div className="flex items-center justify-center h-12 w-12 rounded-full bg-teal-900/50 text-teal-400 font-semibold border border-teal-800">
+                      {item.owner.username[0]}
                     </div>
                     <div>
-                      <p className="text-gray-800 font-medium">
+                      <p className="text-gray-300 font-medium">
                         Sent request to{" "}
-                        <span className="font-bold ">
+                        <span className="font-bold text-white">
                           {item.owner.username} ({item.owner.email})
                         </span>{" "}
                         for doc collaboration
                       </p>
-                      <p className="text-gray-500 text-sm">{item.updatedAt}</p>
+                      <p className="text-gray-500 text-sm mt-1">{new Date(item.updatedAt).toLocaleString()}</p>
                     </div>
                   </div>
 
-                  {/* Right Section - Status */}
                   <div>
                     <span
-                      className={`py-1 px-4 rounded-full text-xs font-semibold ${
+                      className={`py-1 px-3 rounded-full text-xs font-semibold ${
                         item.status === "pending"
-                          ? "bg-yellow-100 text-yellow-600"
+                          ? "bg-yellow-900/30 text-yellow-400 border  border-yellow-800"
                           : item.status === "accepted"
-                          ? "bg-green-100 text-green-600"
-                          : "bg-red-100 text-red-600"
+                          ? "bg-green-900/30 text-green-400 border border-green-800"
+                          : "bg-red-900/30 text-red-400 border border-red-800"
                       }`}
                     >
                       {item.status}
                     </span>
                   </div>
-                </div>
+                </motion.div>
               ))
             ) : (
               <div className="p-6 text-center text-gray-500">
@@ -162,71 +163,69 @@ export default function NotificationTabs() {
           </>
         )}
 
-        {/* Incoming Requests Tab because you are owner of that doc*/}
+        {/* Incoming Requests Tab */}
         {activeTab === "incoming" && (
           <>
             {incomingNotifications.length > 0 ? (
               incomingNotifications.map((item, index) => (
-                <div
+                <motion.div
                   key={index}
-                  className="flex flex-col sm:flex-row justify-between items-center gap-2 p-4 border-b hover:bg-gray-50 transition"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                  className="flex flex-col sm:flex-row justify-between items-center gap-4 p-4 border-b border-gray-700 hover:bg-gray-750 transition"
                 >
-                  {/* Left Section */}
                   <div className="flex items-start gap-4">
-                    <div className="flex items-center justify-center h-12 w-12 rounded-full bg-purple-100 text-purple-600 font-semibold">
-                      {item.owner.username[0]} {/* First Letter of Sender */}
+                    <div className="flex items-center justify-center h-12 w-12 rounded-full bg-purple-900/50 text-purple-400 font-semibold border border-purple-800">
+                      {item.requester.username[0]}
                     </div>
                     <div>
-                      <p className="text-gray-800 font-medium">
-                        <span className="font-semibold">{item.sender}</span>{" "}
-                        Incoming request by{" "}
-                        <span className="font-bold">
+                      <p className="text-gray-300 font-medium">
+                        <span className="text-white">{item.sender}</span> request by{" "}
+                        <span className="font-bold text-white">
                           {item.requester.username} ({item.requester.email})
                         </span>{" "}
-                        <br />
-                        asking for edit access
+                        for edit access
                       </p>
-                      <p className="text-gray-500 text-sm">{item.updatedAt}</p>
+                      <p className="text-gray-500 text-sm mt-1">{new Date(item.updatedAt).toLocaleString()}</p>
                     </div>
                   </div>
 
-                  {/* Right Section - Status */}
-                  <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-2 mt-4 sm:mt-0">
+                  <div className="flex flex-col sm:flex-row items-center gap-3 mt-3 sm:mt-0">
                     <span
-                      className={`py-1 px-4 rounded-full text-xs font-semibold ${
+                      className={`py-1 px-3 rounded-full text-xs font-semibold ${
                         item.status === "pending"
-                          ? "bg-yellow-100 text-yellow-600"
+                          ? "bg-yellow-900/30 text-yellow-400 border border-yellow-800"
                           : item.status === "accepted"
-                          ? "bg-green-100 text-green-600"
-                          : "bg-red-100 text-red-600"
+                          ? "bg-green-900/30 text-green-400 border border-green-800"
+                          : "bg-red-900/30 text-red-400 border border-red-800"
                       }`}
                     >
                       {item.status}
                     </span>
 
-                    {/* Yes / No buttons */}
                     {item.status === "pending" && (
-                      <div className="flex gap-2 mt-2 sm:mt-0">
-                        <button
-                          onClick={() => {
-                            acceptingrequest(item._id);
-                          }}
-                          className="px-4 py-2 bg-green-100 ml-2 text-green-600 font-semibold rounded-md transition hover:bg-green-200"
+                      <div className="flex gap-2">
+                        <motion.button
+                          whileHover={{ scale: 1.03 }}
+                          whileTap={{ scale: 0.97 }}
+                          onClick={() => acceptingrequest(item._id)}
+                          className="px-3 py-1.5 bg-green-900/50 text-green-400 font-medium rounded-md border border-green-800 hover:bg-green-800/30 transition"
                         >
                           Accept
-                        </button>
-                        <button
-                          onClick={() => {
-                            rejectingrequest(item._id);
-                          }}
-                          className="px-4 py-2 bg-red-100 text-red-600 font-semibold rounded-md transition hover:bg-red-200 ml-2"
+                        </motion.button>
+                        <motion.button
+                          whileHover={{ scale: 1.03 }}
+                          whileTap={{ scale: 0.97 }}
+                          onClick={() => rejectingrequest(item._id)}
+                          className="px-3 py-1.5 bg-red-900/50 text-red-400 font-medium rounded-md border border-red-800 hover:bg-red-800/30 transition"
                         >
                           Reject
-                        </button>
+                        </motion.button>
                       </div>
                     )}
                   </div>
-                </div>
+                </motion.div>
               ))
             ) : (
               <div className="p-6 text-center text-gray-500">
@@ -235,8 +234,8 @@ export default function NotificationTabs() {
             )}
           </>
         )}
-      </div>
-      <ToastContainer />
+      </motion.div>
+      <ToastContainer position="bottom-right" autoClose={3000} theme="dark" />
     </div>
   );
 }
