@@ -29,7 +29,7 @@ A secure, real-time collaboration platform built with cutting-edge web technolog
 
 ## 🖥️ Demo
 
-[Live Demo](https://your-demo-link.com) | [Video Walkthrough](https://youtube.com/your-video-link)
+[Video Walkthrough](https://drive.google.com/file/d/1zqjyIDzC2dqxRkOHLlK5oMjjdybUj4yT/view?usp=drive_link)
 
 ```bash
 # Sample terminal commands
