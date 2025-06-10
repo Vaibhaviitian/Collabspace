@@ -23,7 +23,7 @@ function Editor() {
   // socket ka bhaang bhosda
 
   useEffect(() => {
-    const s = io("http://localhost:1000");
+    const s = io("https://collabspace-6cxj.onrender.com");
     setSocket(s);
     return () => {
       s.disconnect();

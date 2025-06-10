@@ -71,12 +71,10 @@ io.on("connection", (socket) => {
     console.log(docid);
     try {
       const response = await axios.post(
-        `http://localhost:1000/api/user/autosave`,
-        {
+        `https://collabspace-6cxj.onrender.com/api/user/autosave`,{
           docid,
           content,
-        }
-      );
+        });
       console.log(response.data.message);
       socket.to(docid).emit("broadcast-content", content);
     } catch (error) {
