@@ -220,7 +220,7 @@ const Dashboard = () => {
             {!searchQuery && activeTab === "myProjects" && (
               <Link
                 to="/doc-editing"
-                className="px-6 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-lg font-medium"
+                className="px-6 py-2 bg-green-500 rounded-lg font-medium"
               >
                 Create New Project
               </Link>
