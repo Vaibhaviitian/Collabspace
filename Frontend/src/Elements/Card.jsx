@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 
 function Card({ title, ownerid, docid }) {
+  console.log(title,ownerid,docid)
   const [ownername, setOwnername] = useState("");
   const [owneremail, setOwneremail] = useState("");
   const user_id = localStorage.getItem("itemhai")?.toString() || "";
@@ -27,6 +28,7 @@ function Card({ title, ownerid, docid }) {
   };
 
   useEffect(() => {
+    console.log("in cards")
     ownerabout();
     status_of_req();
   }, []);

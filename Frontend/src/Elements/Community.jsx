@@ -11,7 +11,7 @@ function Community() {
       const response = await axios.get(
         "http://localhost:1000/api/user/all_docs"
       );
-      console.log(response)
+      console.log(response);
       if (response) {
         setdata(response.data.data);
       }
@@ -49,8 +49,14 @@ function Community() {
                 );
               })
             ) : (
-              <div className="text-center text-gray-900 font-bold text-5xl">
-                No documents found
+              <div className="flex flex-col items-center justify-center py-12">
+                <div className="text-gray-900 text-2xl font-extrabold mb-4">
+                  No documents found
+                </div>
+                <p className="text-gray-700 max-w-md text-center">
+                  It looks like you don't have any documents yet. Create a new
+                  one to get started!
+                </p>
               </div>
             )}
           </div>
