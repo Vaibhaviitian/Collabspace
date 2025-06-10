@@ -8,8 +8,9 @@ function Community() {
   // Function to fetch all documents
   const getting_alldocs = async () => {
     try {
+      console.log(import.meta.env.VITE_API_KEY);
       const response = await axios.get(
-        "http://localhost:1000/api/user/all_docs"
+        `${import.meta.env.VITE_API_KEY}/api/user/all_docs`
       );
       console.log(response);
       if (response) {

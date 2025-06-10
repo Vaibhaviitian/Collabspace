@@ -105,7 +105,7 @@ function Editor() {
   const checking_owner = async () => {
     setLoad(true);
     const response = await axios.post(
-      "http://localhost:1000/api/user/getting_doc_content",
+      `${import.meta.env.VITE_API_KEY}/api/user/getting_doc_content`,
       {
         docid,
       }
@@ -137,7 +137,7 @@ function Editor() {
   const check_for_title = async () => {
     try {
       const response = await axios.post(
-        `http://localhost:1000/api/user/gettitle`,
+        `${import.meta.env.VITE_API_KEY}/api/user/gettitle`,
         { docid }
       );
       // console.log(response.data.data);
@@ -187,7 +187,7 @@ function Editor() {
     try {
       // console.log("in creating a doc");
       const response = await axios.post(
-        "http://localhost:1000/api/user/saving-the-doc",
+        `${import.meta.env.VITE_API_KEY}/api/user/saving-the-doc`,
         {
           title,
           docid,
@@ -226,7 +226,7 @@ function Editor() {
     // console.log("aaya hu data function mein");
     try {
       const response = await axios.post(
-        `http://localhost:1000/api/user/getting_doc_content`,
+        `${import.meta.env.VITE_API_KEY}/api/user/getting_doc_content`,
         { docid }
       );
       // console.log(response.data.data);

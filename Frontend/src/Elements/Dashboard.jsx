@@ -32,13 +32,13 @@ const Dashboard = () => {
     try {
       setLoading(true);
       const myDocsResponse = await axios.post(
-        "http://localhost:1000/api/user/my_docs",
+        `${import.meta.env.VITE_API_KEY}/api/user/my_docs`,
         { user_id }
       );
       setMyProjects(myDocsResponse.data.docs);
 
       const allDocsResponse = await axios.get(
-        "http://localhost:1000/api/user/all_docs"
+        `${import.meta.env.VITE_API_KEY}/api/user/all_docs`
       );
 
       const updatedSharedProjects = [];
@@ -70,7 +70,7 @@ const Dashboard = () => {
   const handleDelete = async (id) => {
     try {
       const response = await axios.post(
-        "http://localhost:1000/api/collabs/delete_doc",
+        `${import.meta.env.VITE_API_KEY}/api/collabs/delete_doc`,
         { id }
       );
       toast.info(response.data.message);
@@ -136,14 +136,14 @@ const Dashboard = () => {
 
           <Link
             to="/doc-editing"
-            className="flex items-center space-x-2 px-6 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-lg font-medium"
+            className="flex items-center space-x-2 px-6 py-2 bg-green-400 text-black rounded-lg font-medium"
           >
             <FaPlus className="w-4 h-4" />
             <span>New Project</span>
           </Link>
 
           <button
-            className="flex items-center space-x-2 px-6 py-2 bg-gradient-to-r from-blue-500 to-red-600 rounded-lg font-medium"
+            className="flex items-center space-x-2 px-6 py-2 bg-red-400 text-black rounded-lg font-medium"
             onClick={runkardo}
           >
             {" "}

@@ -17,7 +17,7 @@ function SignUpPage() {
       e.preventDefault();
       setIsload(true);
       const response = await axios.post(
-        "http://localhost:1000/api/user/Register",
+        `${import.meta.env.VITE_API_KEY}/api/user/Register`,
         { username, email, password }
       );
       toast.success(response.data.message);

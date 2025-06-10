@@ -14,7 +14,7 @@ export default function NotificationTabs() {
   const incomingNotifications_handler = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:1000/api/collabs/my_requests",
+        `${import.meta.env.VITE_API_KEY}/api/collabs/my_requests`,
         { user_id }
       );
       setIncomingNotifications(response?.data?.data);
@@ -26,7 +26,7 @@ export default function NotificationTabs() {
   const sentNotifications_handler = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:1000/api/collabs/sended_requests",
+        `${import.meta.env.VITE_API_KEY}/api/collabs/sended_requests`,
         { user_id }
       );
       setSentNotifications(response?.data?.data);
@@ -38,7 +38,7 @@ export default function NotificationTabs() {
   const acceptingrequest = async (request_id) => {
     try {
       const response = await axios.post(
-        "http://localhost:1000/api/collabs/handling_request",
+        `${import.meta.env.VITE_API_KEY}/api/collabs/handling_request`,
         { user_id, request_id, action: "accepted" }
       );
       toast.success(response?.data?.message);
@@ -50,7 +50,7 @@ export default function NotificationTabs() {
   const rejectingrequest = async (request_id) => {
     try {
       const response = await axios.post(
-        "http://localhost:1000/api/collabs/handling_request",
+        `${import.meta.env.VITE_API_KEY}/api/collabs/handling_request`,
         { action: "rejected", request_id, user_id }
       );
       toast.success(response?.data?.message);

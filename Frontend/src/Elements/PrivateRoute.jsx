@@ -14,8 +14,7 @@ const Privateroutes = ({ children }) => {
   const handlingverification = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:1000/api/user/checkforauthentication",
-        {
+        `${import.meta.env.VITE_API_KEY}/api/user/checkforauthentication`,{
           Authorization,
         }
       );
