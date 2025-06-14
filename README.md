@@ -1,11 +1,9 @@
 # 🔐 CollabSpace - Real-time Collaboration Platform
 
-![Project Banner](https://via.placeholder.com/1200x400/1e293b/ffffff?text=CollabSpace) <!-- Replace with your actual banner -->
-
 A secure, real-time collaboration platform built with cutting-edge web technologies. Perfect for teams to create, edit, and share content seamlessly.
 
 [![Demo Video](https://img.shields.io/badge/Watch-Demo-red?style=for-the-badge&logo=youtube)](https://youtube.com/your-video-link) <!-- Add your YouTube link here -->
-
+[![Website](https://collabspace-ooppp.vercel.app/)
 ## 🚀 Features
 
 - **Real-time Editing** - See changes instantly
